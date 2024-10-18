@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
 
 class FloorInfoPage extends StatefulWidget {
+  final Map<String, dynamic> FloorInfoDetails;
+  const FloorInfoPage({Key? key, required this.FloorInfoDetails})
+      : super(key: key);
   @override
   _FloorInfoPageState createState() => _FloorInfoPageState();
 }
 
 class _FloorInfoPageState extends State<FloorInfoPage> {
-  final List<FloorDetail> _floorDetails = [
-    FloorDetail(label: 'Floor No.', value: '10'),
-    FloorDetail(label: 'Elevator Available', value: 'Yes'),
-    FloorDetail(label: 'Packing Required', value: 'Yes'),
-    FloorDetail(label: 'Distance from door to truck', value: '20 mtrs'),
-  ];
+  Map<String, dynamic> floorData = {};
 
-  final List<FloorDetail> _newHouseDetails = [
-    FloorDetail(label: 'Floor No.', value: '0'),
-    FloorDetail(label: 'Elevator Available', value: 'No'),
-    FloorDetail(label: 'Unpacking Required', value: 'Yes'),
-    FloorDetail(label: 'Distance from door to truck', value: '50 mtrs'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    proccessFloorData(widget.FloorInfoDetails);
+  }
+
+  void proccessFloorData(Map<String, dynamic> Data) {
+    setState(() {
+      floorData = Data;
+    });
+
+    print(
+        "***********************FLOOR DATA********************************************");
+    print(floorData);
+    print("Floor number" + floorData["old_floor_no"]);
+    print(
+        "***********************END FLOOR DATA END********************************************");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Floor Info Page'),
+        title: Text('New Leads'),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications),
@@ -53,13 +63,7 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
                           color: Colors.red, fontWeight: FontWeight.bold)),
                   GestureDetector(
                     // Wrap with GestureDetector
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FloorInfoPage()),
-                      );
-                    },
+                    onTap: () {},
                     child: Text("Floor Info"),
                   ),
                   Text("Floor Info"),
@@ -72,41 +76,87 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Existing house details',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Container(
+                    color: Colors.grey[400],
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Existing house details',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.deepOrange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 15.0),
-                  ..._floorDetails
-                      .map((detail) =>
-                          buildDetailRow(detail.label, detail.value))
-                      .toList(),
+                  Column(
+                    children: [
+                      buildDetailRow(
+                          "Floor No", floorData["old_floor_no"].toString()),
+                      buildDetailRow("Elevator available",
+                          floorData["old_elevator_availability"].toString()),
+                      buildDetailRow("Packing Required ",
+                          floorData["packing_service"].toString()),
+                      buildDetailRow("Distance from door to truck",
+                          floorData["old_parking_distance"].toString()),
+                    ],
+                  ),
                   const SizedBox(height: 12.0),
                   Text(
                     'Additonal Information',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Dog idde',
+                    floorData["old_house_additional_info"] != null &&
+                            floorData["old_house_additional_info"] != ""
+                        ? floorData["old_house_additional_info"]
+                        : "none",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16.0),
-                  Text(
-                    'New house details',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Container(
+                    color: Colors.grey[400],
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'New house details',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.deepOrange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 15.0),
-                  ..._newHouseDetails
-                      .map((detail) =>
-                          buildDetailRow(detail.label, detail.value))
-                      .toList(),
+                  buildDetailRow(
+                      "Floor No", floorData["new_floor_no"].toString()),
+                  buildDetailRow("Elevator Available",
+                      floorData["new_elevator_availability"].toString()),
+                  buildDetailRow("Unpacking Required",
+                      floorData["unpacking_service"].toString()),
+                  buildDetailRow("Distance from door to truck",
+                      floorData["new_parking_distance"].toString()),
                   const SizedBox(height: 12.0),
                   Text(
                     'Additonal Information',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Dog idde',
+                    floorData["new_house_additional_info"] != null &&
+                            floorData["new_house_additional_info"] != ""
+                        ? floorData["new_house_additional_info"]
+                        : "none",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -161,11 +211,4 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
       ],
     );
   }
-}
-
-class FloorDetail {
-  final String label;
-  final String value;
-
-  FloorDetail({required this.label, required this.value});
 }

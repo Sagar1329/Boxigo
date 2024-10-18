@@ -148,7 +148,7 @@ class _ViewDetailsState extends State<ViewDetails> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FloorInfoPage()),
+                            builder: (context) => FloorInfoPage(FloorInfoDetails:widget.itemDetails)),
                       );
                     },
                     child: Text("Floor Info"),
