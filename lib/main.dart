@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 1; // Default to "New" tab
   Map<String, dynamic>? _fetchedData;
   List<dynamic>? customerEstimateFlow; // Declare here
+  List<dynamic>? ItemDetails;
 
   @override
   void initState() {
@@ -49,9 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
         final data = jsonDecode(response.body);
         setState(() {
           _fetchedData = data;
-          customerEstimateFlow = data['Customer_Estimate_Flow']
-              as List<dynamic>; // Cast to List<dynamic>
-        });
+          customerEstimateFlow = data['Customer_Estimate_Flow']        as List<dynamic>; 
+     });
         print("********************************************************");
         print(data);
 
@@ -320,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Handle "View Details" click
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ViewDetails()),
+                        MaterialPageRoute(builder: (context) => ViewDetails(itemDetails: customerEstimateFlow![index])),
                       );
                     },
                     child: Text("View Details",
