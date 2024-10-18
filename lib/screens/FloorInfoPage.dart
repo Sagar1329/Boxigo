@@ -1,3 +1,8 @@
+import 'package:boxigo_app/screens/ViewDetails.dart';
+import 'package:boxigo_app/widgets/TabWidget.dart';
+import 'package:boxigo_app/widgets/app_bar.dart';
+import 'package:boxigo_app/widgets/bottom_navigation.dart';
+import 'package:boxigo_app/widgets/detail_row_widget.dart';
 import 'package:flutter/material.dart';
 
 class FloorInfoPage extends StatefulWidget {
@@ -10,7 +15,7 @@ class FloorInfoPage extends StatefulWidget {
 
 class _FloorInfoPageState extends State<FloorInfoPage> {
   Map<String, dynamic> floorData = {};
-
+  int selectedIndex = 1;
   @override
   void initState() {
     super.initState();
@@ -21,35 +26,26 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
     setState(() {
       floorData = Data;
     });
-
-    print(
-        "***********************FLOOR DATA********************************************");
-    print(floorData);
-    print("Floor number" + floorData["old_floor_no"]);
-    print(
-        "***********************END FLOOR DATA END********************************************");
   }
 
   @override
   Widget build(BuildContext context) {
+    void _onTabTapped(int index) {
+      setState(() {
+        selectedIndex = index;
+      });
+      if (index == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewDetails(itemDetails: floorData),
+          ),
+        );
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('New Leads'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              // Handle notification actions here
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Handle search actions here
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: "New Leads"),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -58,16 +54,24 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("Items",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold)),
-                  GestureDetector(
-                    // Wrap with GestureDetector
-                    onTap: () {},
-                    child: Text("Floor Info"),
+                  TabWidget(
+                    label: "Items",
+                    index: 0,
+                    selectedIndex: selectedIndex,
+                    onTap: _onTabTapped,
                   ),
-                  Text("Floor Info"),
-                  Text("Send Quote"),
+                  TabWidget(
+                    label: "Floor info",
+                    index: 1,
+                    selectedIndex: selectedIndex,
+                    onTap: _onTabTapped,
+                  ),
+                  TabWidget(
+                    label: "Send Quote",
+                    index: 2,
+                    selectedIndex: selectedIndex,
+                    onTap: _onTabTapped,
+                  ),
                 ],
               ),
             ),
@@ -97,14 +101,19 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
                   const SizedBox(height: 15.0),
                   Column(
                     children: [
-                      buildDetailRow(
-                          "Floor No", floorData["old_floor_no"].toString()),
-                      buildDetailRow("Elevator available",
-                          floorData["old_elevator_availability"].toString()),
-                      buildDetailRow("Packing Required ",
-                          floorData["packing_service"].toString()),
-                      buildDetailRow("Distance from door to truck",
-                          floorData["old_parking_distance"].toString()),
+                      DetailRowWidget(
+                          label: "Floor No",
+                          value: floorData["old_floor_no"].toString()),
+                      DetailRowWidget(
+                          label: "Elevator available",
+                          value: floorData["old_elevator_availability"]
+                              .toString()),
+                      DetailRowWidget(
+                          label: "Packing Required ",
+                          value: floorData["packing_service"].toString()),
+                      DetailRowWidget(
+                          label: "Distance from door to truck",
+                          value: floorData["old_parking_distance"].toString()),
                     ],
                   ),
                   const SizedBox(height: 12.0),
@@ -139,14 +148,18 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
                     ),
                   ),
                   const SizedBox(height: 15.0),
-                  buildDetailRow(
-                      "Floor No", floorData["new_floor_no"].toString()),
-                  buildDetailRow("Elevator Available",
-                      floorData["new_elevator_availability"].toString()),
-                  buildDetailRow("Unpacking Required",
-                      floorData["unpacking_service"].toString()),
-                  buildDetailRow("Distance from door to truck",
-                      floorData["new_parking_distance"].toString()),
+                  DetailRowWidget(
+                      label: "Floor No",
+                      value: floorData["new_floor_no"].toString()),
+                  DetailRowWidget(
+                      label: "Elevator Available",
+                      value: floorData["new_elevator_availability"].toString()),
+                  DetailRowWidget(
+                      label: "Unpacking Required",
+                      value: floorData["unpacking_service"].toString()),
+                  DetailRowWidget(
+                      label: "Distance from door to truck",
+                      value: floorData["new_parking_distance"].toString()),
                   const SizedBox(height: 12.0),
                   Text(
                     'Additonal Information',
@@ -165,50 +178,10 @@ class _FloorInfoPageState extends State<FloorInfoPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard),
-            label: 'Leads',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.task),
-            label: 'Tasks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.report),
-            label: 'Reports',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
-            label: 'More',
-          ),
-        ],
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 1,
+        onTap: (index) {},
       ),
-    );
-  }
-
-  Widget buildDetailRow(String label, String value) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(label, style: TextStyle(fontSize: 16)),
-            ),
-            Text(
-              value,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 13.0),
-      ],
     );
   }
 }
